@@ -2,55 +2,156 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* 2. Здесь мы настраиваем внешний вид (CSS) */
+        /* Настройка цветов под тему Telegram */
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #000000);
+            --button-color: var(--tg-theme-button-color, #2481cc);
+            --button-text: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+        }
+
         body {
-            font-family: sans-serif;
-            background-color: var(--tg-theme-bg-color); /* Берет цвет фона из настроек Telegram пользователя */
-            color: var(--tg-theme-text-color);         /* Берет цвет текста пользователя */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            text-align: center;
         }
+
+        .user-card {
+            background-color: var(--secondary-bg);
+            padding: 20px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .user-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 2px solid var(--button-color);
+        }
+
+        h1 { font-size: 22px; margin: 10px 0; }
+        p { color: var(--hint-color); font-size: 14px; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
         button {
-            padding: 15px 25px;
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+            background-color: var(--button-color);
+            color: var(--button-text);
             border: none;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:active { opacity: 0.7; }
+
+        .status {
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--button-color);
         }
     </style>
 </head>
 <body>
-    <h1>Привет, <span id="user-name">Гость</span>!</h1>
-    <p>Это твое первое мини-приложение.</p>
-    <button id="main-btn">Нажми меня</button>
+
+    <div class="user-card">
+        <h1 id="greeting">Привет!</h1>
+        <p id="user-info">Загрузка данных...</p>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="sendDataToBot()">Отправить данные боту</button>
+        <button onclick="testHaptic()">Тест вибрации</button>
+        <button onclick="toggleMainButton()">Показать/Скрыть главную кнопку</button>
+    </div>
+
+    <div id="status" class="status"></div>
 
     <script>
-        /* 4. Логика на JavaScript. Она управляет тем, что происходит внутри Telegram */
-        
-        // Инициализация приложения
+        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
 
-        // Сообщаем Telegram, что приложение готово к показу
-        tg.ready();
+        // Расширяем на весь экран
+        tg.expand();
 
-        // Берем имя пользователя прямо из Telegram и вставляем в заголовок
-        if (tg.initDataUnsafe.user) {
-            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+        // Получаем данные пользователя
+        const user = tg.initDataUnsafe.user;
+
+        if (user) {
+            document.getElementById('greeting').innerText = `Привет, ${user.first_name}!`;
+            document.getElementById('user-info').innerText = `Твой ID: ${user.id}\nUsername: @${user.username || 'нет'}`;
         }
 
-        // Обработка клика на кнопку
-        document.getElementById('main-btn').addEventListener('click', () => {
-            tg.showAlert("Кнопка нажата! Сейчас я закроюсь.");
-            tg.close(); // Закрывает мини-приложение
+        // 1. Функция отправки данных боту
+        function sendDataToBot() {
+            const data = {
+                message: "Кнопка нажата!",
+                time: new Date().toLocaleTimeString()
+            };
+            tg.sendData(JSON.stringify(data)); 
+            // Примечание: tg.sendData работает ТОЛЬКО если бот запущен через KeyboardButton
+        }
+
+        // 2. Функция тактильной отдачи (вибрация)
+        function testHaptic() {
+            tg.HapticFeedback.notificationOccurred('success');
+            document.getElementById('status').innerText = "Бррр! Вибрация сработала";
+            setTimeout(() => { document.getElementById('status').innerText = ""; }, 2000);
+        }
+
+        // 3. Работа с MainButton (Нижняя системная кнопка)
+        let isMainBtnVisible = false;
+        tg.MainButton.setText("ПОДТВЕРДИТЬ");
+        tg.MainButton.setParams({
+            color: "#31b545" // Зеленый цвет
         });
+
+        function toggleMainButton() {
+            if (isMainBtnVisible) {
+                tg.MainButton.hide();
+            } else {
+                tg.MainButton.show();
+            }
+            isMainBtnVisible = !isMainBtnVisible;
+        }
+
+        // Обработка нажатия на MainButton
+        tg.MainButton.onClick(() => {
+            tg.showPopup({
+                title: 'Готово!',
+                message: 'Вы нажали на системную кнопку Telegram',
+                buttons: [{type: 'ok'}]
+            });
+        });
+
+        // Сообщаем Telegram, что всё загрузилось
+        tg.ready();
     </script>
 </body>
 </html>
