@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        /* 2. Здесь мы настраиваем внешний вид (CSS) */
+        body {
+            font-family: sans-serif;
+            background-color: var(--tg-theme-bg-color); /* Берет цвет фона из настроек Telegram пользователя */
+            color: var(--tg-theme-text-color);         /* Берет цвет текста пользователя */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        button {
+            padding: 15px 25px;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Привет, <span id="user-name">Гость</span>!</h1>
+    <p>Это твое первое мини-приложение.</p>
+    <button id="main-btn">Нажми меня</button>
+
+    <script>
+        /* 4. Логика на JavaScript. Она управляет тем, что происходит внутри Telegram */
+        
+        // Инициализация приложения
+        const tg = window.Telegram.WebApp;
+
+        // Сообщаем Telegram, что приложение готово к показу
+        tg.ready();
+
+        // Берем имя пользователя прямо из Telegram и вставляем в заголовок
+        if (tg.initDataUnsafe.user) {
+            document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        // Обработка клика на кнопку
+        document.getElementById('main-btn').addEventListener('click', () => {
+            tg.showAlert("Кнопка нажата! Сейчас я закроюсь.");
+            tg.close(); // Закрывает мини-приложение
+        });
+    </script>
+</body>
+</html>
