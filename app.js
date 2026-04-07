@@ -1,6 +1,6 @@
 const tg = window.Telegram.WebApp;
 let cart = [];
-const BACKEND_URL = "ЗАМЕНИ_МЕНЯ_НА_ССЫЛКУ_ОТ_RENDER"; 
+const BACKEND_URL = "https://r-firstbot.onrender.com"; 
 
 tg.expand();
 tg.MainButton.setText("ОФОРМИТЬ ЗАКАЗ");
