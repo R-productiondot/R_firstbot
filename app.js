@@ -4,8 +4,9 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 
 tg.expand();
 tg.MainButton.setText("ОФОРМИТЬ ЗАКАЗ");
-tg.MainButton.setParams({ color: '#2ecc71' }); // Зеленая кнопка заказа
+tg.MainButton.setParams({ color: '#2ecc71' });
 
+// БЛОК 1: Загрузка и отображение товаров (чтобы они не пропадали)
 fetch('products.json')
   .then(res => res.json())
   .then(products => {
@@ -41,11 +42,9 @@ window.addToCart = function(name, price) {
   tg.MainButton.show();
 };
 
+// БЛОК 2: Отправка заказа с правильным именем пользователя
 tg.onEvent('mainButtonClicked', async () => {
-  // Вытаскиваем данные пользователя из Telegram
   const user = tg.initDataUnsafe.user;
-  
-  // Если данных нет (например, зашли через браузер), ставим заглушки
   const customerName = user ? user.first_name : "Покупатель";
   const customerUsername = user ? (user.username || "нет_ника") : "unknown";
 
@@ -56,8 +55,8 @@ tg.onEvent('mainButtonClicked', async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        customer: customerName,      // Отправляем реальное имя
-        username: customerUsername,  // Отправляем реальный ник
+        customer: customerName,
+        username: customerUsername,
         items: cart,
         total: cart.reduce((sum, item) => sum + item.price, 0)
       })
@@ -75,30 +74,5 @@ tg.onEvent('mainButtonClicked', async () => {
     tg.MainButton.hideProgress();
   }
 });
+
   
-  tg.MainButton.showProgress();
-
-  try {
-    const response = await fetch(`${BACKEND_URL}/order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customer: user.first_name,
-        username: user.username,
-        items: cart,
-        total: cart.reduce((sum, item) => sum + item.price, 0)
-      })
-    });
-
-    if (response.ok) {
-      tg.showAlert("✅ Заказ успешно отправлен сотрудникам!");
-      tg.close();
-    } else {
-      throw new Error();
-    }
-  } catch (e) {
-    tg.showAlert("❌ Ошибка при отправке. Проверьте сервер.");
-  } finally {
-    tg.MainButton.hideProgress();
-  }
-});
