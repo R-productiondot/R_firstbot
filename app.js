@@ -6,7 +6,7 @@ tg.expand();
 tg.MainButton.setText("ОФОРМИТЬ ЗАКАЗ");
 tg.MainButton.setParams({ color: '#2ecc71' });
 
-// БЛОК 1: Загрузка и отображение товаров (чтобы они не пропадали)
+// 1. Загружаем товары из файла (чтобы они снова появились на экране)
 fetch('products.json')
   .then(res => res.json())
   .then(products => {
@@ -38,11 +38,14 @@ fetch('products.json')
 
 window.addToCart = function(name, price) {
   cart.push({ name, price });
-  document.getElementById('cart-info').innerText = `В заказе: ${cart.length} товаров`;
+  const cartInfo = document.getElementById('cart-info');
+  if (cartInfo) {
+    cartInfo.innerText = `В заказе: ${cart.length} товаров`;
+  }
   tg.MainButton.show();
 };
 
-// БЛОК 2: Отправка заказа с правильным именем пользователя
+// 2. Отправка заказа (с твоим реальным именем из Telegram)
 tg.onEvent('mainButtonClicked', async () => {
   const user = tg.initDataUnsafe.user;
   const customerName = user ? user.first_name : "Покупатель";
@@ -69,10 +72,8 @@ tg.onEvent('mainButtonClicked', async () => {
       throw new Error();
     }
   } catch (e) {
-    tg.showAlert("❌ Ошибка при отправке.");
+    tg.showAlert("❌ Ошибка сервера. Попробуйте еще раз.");
   } finally {
     tg.MainButton.hideProgress();
   }
 });
-
-  
