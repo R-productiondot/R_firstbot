@@ -42,7 +42,39 @@ window.addToCart = function(name, price) {
 };
 
 tg.onEvent('mainButtonClicked', async () => {
-  const user = tg.initDataUnsafe.user || { first_name: "Покупатель", username: "unknown" };
+  // Вытаскиваем данные пользователя из Telegram
+  const user = tg.initDataUnsafe.user;
+  
+  // Если данных нет (например, зашли через браузер), ставим заглушки
+  const customerName = user ? user.first_name : "Покупатель";
+  const customerUsername = user ? (user.username || "нет_ника") : "unknown";
+
+  tg.MainButton.showProgress();
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer: customerName,      // Отправляем реальное имя
+        username: customerUsername,  // Отправляем реальный ник
+        items: cart,
+        total: cart.reduce((sum, item) => sum + item.price, 0)
+      })
+    });
+
+    if (response.ok) {
+      tg.showAlert("✅ Заказ успешно отправлен!");
+      tg.close();
+    } else {
+      throw new Error();
+    }
+  } catch (e) {
+    tg.showAlert("❌ Ошибка при отправке.");
+  } finally {
+    tg.MainButton.hideProgress();
+  }
+});
   
   tg.MainButton.showProgress();
 
