@@ -1,1 +1,80 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #C8102E;
+  color: white;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 80px;
+}
 
+header {
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+#search-container {
+  position: sticky;
+  top: 0;
+  background-color: #C8102E;
+  padding: 10px;
+  text-align: center;
+  z-index: 100;
+}
+
+#search {
+  width: 90%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+
+.card {
+  background: white;
+  color: #333;
+  margin: 12px;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.card p {
+  color: #C8102E;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.card button {
+  width: 100%;
+  padding: 12px;
+  background-color: #C8102E;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#cart-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  color: #C8102E;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+}
