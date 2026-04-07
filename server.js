@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 // ВСТАВЬ СВОИ ДАННЫЕ ТУТ
-const TOKEN = "ТВОЙ_ТОКЕН_ИЗ_BOTFATHER"; 
+const TOKEN = "8354739145:AAFld83mllCINDwFj772gEOc7_QHdDmZAsg"; 
 const EMPLOYEE_ID = "5750848806"; 
 
 app.post('/order', async (req, res) => {
