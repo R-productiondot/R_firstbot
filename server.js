@@ -24,7 +24,7 @@ app.post('/order', async (req, res) => {
     await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
       chat_id: EMPLOYEE_ID,
       text: text,
-      parse_mode: 'Markdown'
+      
     });
     res.status(200).json({ success: true });
   } catch (error) {
