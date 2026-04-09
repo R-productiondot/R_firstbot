@@ -2,6 +2,22 @@ const tg = window.Telegram.WebApp;
 let cart = [];
 const BACKEND_URL = "https://r-firstbot.onrender.com"; 
 
+window.showPage = function(pageId) {
+    // Скрываем все страницы
+    document.getElementById('shop-page').style.display = 'none';
+    document.getElementById('info-page').style.display = 'none';
+    
+    // Показываем нужную
+    document.getElementById(pageId + '-page').style.display = 'block';
+    
+    // Меняем активную иконку в меню
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    
+    if (pageId === 'shop') navItems[0].classList.add('active');
+    else navItems[1].classList.add('active');
+};
+
 tg.expand();
 tg.MainButton.setText("ОФОРМИТЬ ЗАКАЗ");
 tg.MainButton.setParams({ color: '#2ecc71' });
