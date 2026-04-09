@@ -1,17 +1,60 @@
+
+
 [
   {
-    "name": "Клапан вакуумный ПП Ду 110 OSTENDORF",
+    "name": "Клапан вакуумный ПП внутр. канал. Ду 110 OSTENDORF (881790), Польша",
     "price": 302848,
-    "category": "Канализация"
+    "category": "Канализация",
+    "image": "",
+    "description": "шт"
   },
   {
-    "name": "Клапан вакуумный ПП Ду 50 OSTENDORF",
+    "name": "Клапан вакуумный ПП внутр. канал. Ду 50 OSTENDORF (881780), Польша",
     "price": 106176,
-    "category": "Канализация"
+    "category": "Канализация",
+    "image": "",
+    "description": "шт"
   },
   {
-    "name": "Труба ПП 110х2,7х1000 OSTENDORF",
+    "name": "Труба ПП внутр. канал. 110х2,7х1000 OSTENDORF (115040), Россия",
     "price": 39760,
-    "category": "Канализация"
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
+  },
+  {
+    "name": "Труба ПП внутр. канал. 110х2,7х150 OSTENDORF (115000), Россия",
+    "price": 10416,
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
+  },
+  {
+    "name": "Труба ПП внутр. канал. 110х2,7х1500 OSTENDORF (115050), Россия",
+    "price": 59024,
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
+  },
+  {
+    "name": "Труба ПП внутр. канал. 110х2,7х2000 OSTENDORF (115060), Россия",
+    "price": 71904,
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
+  },
+  {
+    "name": "Труба ПП внутр. канал. 110х2,7х250 OSTENDORF (115010), Россия",
+    "price": 13552,
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
+  },
+  {
+    "name": "Труба ПП внутр. канал. 110х2,7х3000 OSTENDORF (115070), Россия",
+    "price": 103824,
+    "category": "Трубы",
+    "image": "",
+    "description": "шт"
   }
 ]
