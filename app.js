@@ -17,6 +17,10 @@ window.showPage = function(pageId) {
     event.currentTarget.classList.add('active');
 };
 
+window.openInstagram = function() {
+    tg.openInstagram("https://www.instagram.com/homelife_climate");
+};
+
 // Загрузка товаров
 fetch('products.json')
     .then(res => res.json())
