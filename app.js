@@ -76,3 +76,12 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.MainButton.hideProgress();
     }
 });
+
+window.openInstagram = function() {
+    const url = "https://www.instagram.com/r_productiondot"; // Проверь ник!
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openLink(url);
+    } else {
+        window.open(url, '_blank');
+    }
+};
