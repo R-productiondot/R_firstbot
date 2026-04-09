@@ -12,13 +12,23 @@ window.showPage = function(pageId) {
     document.getElementById('info-page').style.display = 'none';
     document.getElementById(pageId + '-page').style.display = 'block';
     
-    const items = document.querySelectorAll('.nav-item');
-    items.forEach(i => i.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    
+    // Ищем на что нажали, чтобы подсветить
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 };
 
+// Функция открытия Instagram
 window.openInstagram = function() {
-    tg.openInstagram("https://www.instagram.com/homelife_climate");
+    const url = "https://www.instagram.com/homelife_climate/";
+    if (tg.openLink) {
+        tg.openLink(url);
+    } else {
+        window.open(url, '_blank');
+    }
 };
 
 // Загрузка товаров
@@ -41,16 +51,22 @@ fetch('products.json')
                 resultsDiv.appendChild(card);
             });
         }
-        render(products);
-        searchInput.oninput = (e) => {
-            const val = e.target.value.toLowerCase();
-            render(products.filter(p => p.name.toLowerCase().includes(val)));
-        };
-    });
+        
+        if (resultsDiv) render(products);
+
+        if (searchInput) {
+            searchInput.oninput = (e) => {
+                const val = e.target.value.toLowerCase();
+                render(products.filter(p => p.name.toLowerCase().includes(val)));
+            };
+        }
+    })
+    .catch(err => console.error("Ошибка загрузки товаров:", err));
 
 window.addToCart = function(name, price) {
     cart.push({ name, price });
-    document.getElementById('cart-info').innerText = `В заказе: ${cart.length} товаров`;
+    const info = document.getElementById('cart-info');
+    if (info) info.innerText = `В заказе: ${cart.length} товаров`;
     tg.MainButton.show();
 };
 
@@ -71,20 +87,8 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.showAlert("✅ Заказ отправлен!");
         tg.close();
     } catch (e) {
-        tg.showAlert("❌ Ошибка");
+        tg.showAlert("❌ Ошибка при отправке");
     } finally {
         tg.MainButton.hideProgress();
     }
 });
-
-// Функция для открытия Instagram
-window.openInstagram = function() {
-    const url = "https://www.instagram.com/homelife_climate/";
-    
-    // Используем максимально надежный путь к методу
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.openLink(url);
-    } else {
-        window.open(url, '_blank');
-    }
-};
