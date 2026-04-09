@@ -77,13 +77,14 @@ tg.onEvent('mainButtonClicked', async () => {
     }
 });
 
+// Функция для открытия Instagram
 window.openInstagram = function() {
-    const url = "https://www.instagram.com/homelife_climate/"; // Убедись, что ник верный
+    const url = "https://www.instagram.com/homelife_climate/";
     
-    if (tg.openLink) {
-        tg.openLink(url); // Используем встроенный метод Telegram
+    // Используем максимально надежный путь к методу
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openLink(url);
     } else {
-        window.open(url, '_blank'); // Запасной вариант для браузера
+        window.open(url, '_blank');
     }
-};
 };
