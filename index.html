@@ -1,28 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Home Life Climate</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Life Climate</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Home Life Climate</h1>
-  </header>
+    <div id="shop-page" class="page">
+        <div class="header">
+            <h1>Home Life Climate</h1>
+            <input type="text" id="search" placeholder="Поиск по названию...">
+        </div>
+        <div id="results"></div>
+        <div id="cart-info">В заказе: 0 товаров</div>
+    </div>
 
-  <div id="search-container">
-    <input type="text" id="search" placeholder="🔍 Поиск по названию...">
-  </div>
+    <div id="info-page" class="page" style="display: none;">
+        <div class="header">
+            <h1>О компании</h1>
+        </div>
+        <div class="info-content">
+            <img src="https://via.placeholder.com/150" alt="Logo" class="info-logo">
+            <p><strong>Home Life Climate</strong> — ваш надежный партнер в создании идеального климата.</p>
+            <p>Мы занимаемся поставкой и установкой оборудования для систем отопления, вентиляции и кондиционирования.</p>
+            <ul>
+                <li>✅ Более 10 лет на рынке</li>
+                <li>✅ Гарантия качества</li>
+                <li>✅ Быстрая доставка по всему Узбекистану</li>
+            </ul>
+            <p>📍 Наш адрес: г. Ташкент, ул. Примерная, 10</p>
+            <p>📞 Тел: +998 (90) 123-45-67</p>
+        </div>
+    </div>
 
-  <div id="results"></div>
+    <div class="nav-menu">
+        <div class="nav-item active" onclick="showPage('shop')">
+            <span>🛒</span>
+            <p>Магазин</p>
+        </div>
+        <div class="nav-item" onclick="showPage('info')">
+            <span>ℹ️</span>
+            <p>О нас</p>
+        </div>
+    </div>
 
-  <div id="cart-bar">
-    <span id="cart-info">В заказе: 0 товаров</span>
-  </div>
-
-  <script src="app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
 
