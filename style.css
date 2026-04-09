@@ -126,3 +126,28 @@ body {
     border-radius: 24px;
     border: 1px solid rgba(255,255,255,0.1);
 }
+
+.instagram-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.instagram-button:active {
+    transform: scale(0.95);
+}
+
+.info-details {
+    margin-top: 20px;
+}
