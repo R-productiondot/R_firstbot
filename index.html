@@ -2,10 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Home Life Climate</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,52 +11,32 @@
     <div id="shop-page" class="page">
         <div class="header">
             <h1>Home Life Climate</h1>
-            <input type="text" id="search" placeholder="Поиск по названию...">
+            <input type="text" id="search" placeholder="Поиск товаров...">
         </div>
         <div id="results"></div>
-        <div id="cart-info" style="text-align: center; padding: 10px;">В заказе: 0 товаров</div>
+        <div id="cart-info" style="text-align: center; padding: 10px; font-weight: 600; color: white;">В заказе: 0 товаров</div>
     </div>
 
-    <div id="info-page" class="page" style="display: none;">
-    <div class="header">
-        <h1>О компании</h1>
-    </div>
-    <div class="info-content">
-        <p><strong>Home Life Climate</strong> — ваш эксперт в климатическом оборудовании.</p>
-        
-        <div onclick="openInstagram()" class="instagram-button">
-            <span>📸</span> Мы в Instagram
+    <div id="info-page" class="page" style="display: none; padding: 20px;">
+        <div class="header"><h1>О компании</h1></div>
+        <div class="info-card" style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px; color: white; backdrop-filter: blur(10px);">
+            <p><strong>Home Life Climate</strong> — ваш уют в наших руках.</p>
+            <div onclick="openInstagram()" class="instagram-button" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); padding: 15px; border-radius: 15px; text-align: center; font-weight: 700; margin: 20px 0; cursor: pointer;">
+                📸 Наш Instagram
+            </div>
+            <p>📍 г. Ташкент</p>
+            <p>📞 +998 (90) 123-45-67</p>
         </div>
+    </div>
 
-        <div class="info-details">
-            <p>✨ Премиальное качество</p>
-            <p>🚀 Доставка по всей стране</p>
-            <p>🛠 Профессиональный монтаж</p>
+    <div class="nav-menu">
+        <div class="nav-item active" onclick="showPage('shop', this)">
+            <span>🛒</span><p>Магазин</p>
         </div>
-        
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-        <p>📍 г. Ташкент</p>
-        <p>📞 +998 (90) 123-45-67</p>
-    </div>
-</div>
-            
-            </ul>
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-            
-            <p>📍 759R+VFG, Tashkent, Узбекистан</p>
-            <p>📞 +998 (95) 319-09-00</p>
+        <div class="nav-item" onclick="showPage('info', this)">
+            <span>ℹ️</span><p>О нас</p>
         </div>
     </div>
-<div class="nav-menu">
-    <div class="nav-item active" onclick="showPage('shop')">
-        <span>🛒</span>
-        <p>Магазин</p>
-    </div>
-    <div class="nav-item" onclick="showPage('info')">
-        <span>ℹ️</span>
-        <p>О нас</p>
-    </div>
-</div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="app.js"></script>
