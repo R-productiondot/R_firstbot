@@ -4,75 +4,76 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
-tg.MainButton.setParams({ color: '#2ecc71' });
 
-// Переключение страниц
-window.showPage = function(pageId) {
+// Навигация между страницами
+window.showPage = function(pageId, element) {
     document.getElementById('shop-page').style.display = 'none';
     document.getElementById('info-page').style.display = 'none';
     document.getElementById(pageId + '-page').style.display = 'block';
     
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => item.classList.remove('active'));
-    
-    // Ищем на что нажали, чтобы подсветить
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    if (element) element.classList.add('active');
 };
 
-// Функция открытия Instagram
+// Открытие Instagram через API Telegram
 window.openInstagram = function() {
-    const url = "https://www.instagram.com/homelife_climate/";
-    if (tg.openLink) {
-        tg.openLink(url);
-    } else {
-        window.open(url, '_blank');
-    }
+    tg.openLink("https://www.instagram.com/homelife_climate/");
 };
 
-// Загрузка товаров
+// Загрузка и отрисовка товаров
 fetch('products.json')
     .then(res => res.json())
     .then(products => {
-        const resultsDiv = document.getElementById('results');
-        const searchInput = document.getElementById('search');
+        window.allProducts = products;
+        renderItems(products);
 
-        function render(items) {
-            resultsDiv.innerHTML = '';
-            items.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3>${p.name}</h3>
-                    <p>${p.price.toLocaleString()} сум</p>
-                    <button onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
-                `;
-                resultsDiv.appendChild(card);
-            });
-        }
+        document.getElementById('search').oninput = (e) => {
+            const val = e.target.value.toLowerCase();
+            renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
+        };
+    });
+
+function renderItems(items) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+    items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        // Уникальный ID для бейджа каждого товара
+        const badgeId = `badge-${p.name.replace(/\s+/g, '')}`;
+        const count = cart.filter(item => item.name === p.name).length;
         
-        if (resultsDiv) render(products);
+        card.innerHTML = `
+            <div class="badge" id="${badgeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
+            <h3>${p.name}</h3>
+            <p>${p.price.toLocaleString()} сум</p>
+            <button onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
+        `;
+        resultsDiv.appendChild(card);
+    });
+}
 
-        if (searchInput) {
-            searchInput.oninput = (e) => {
-                const val = e.target.value.toLowerCase();
-                render(products.filter(p => p.name.toLowerCase().includes(val)));
-            };
-        }
-    })
-    .catch(err => console.error("Ошибка загрузки товаров:", err));
-
+// Добавление в корзину и обновление счетчика
 window.addToCart = function(name, price) {
     cart.push({ name, price });
-    const info = document.getElementById('cart-info');
-    if (info) info.innerText = `В заказе: ${cart.length} товаров`;
+    
+    const badgeId = `badge-${name.replace(/\s+/g, '')}`;
+    const badge = document.getElementById(badgeId);
+    const count = cart.filter(item => item.name === name).length;
+    
+    if (badge) {
+        badge.innerText = count;
+        badge.style.display = 'flex';
+    }
+
+    document.getElementById('cart-info').innerText = `В заказе: ${cart.length} товаров`;
     tg.MainButton.show();
 };
 
+// Отправка данных на сервер
 tg.onEvent('mainButtonClicked', async () => {
-    const user = tg.initDataUnsafe.user;
     tg.MainButton.showProgress();
+    const user = tg.initDataUnsafe.user;
     try {
         await fetch(`${BACKEND_URL}/order`, {
             method: "POST",
@@ -87,8 +88,7 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.showAlert("✅ Заказ отправлен!");
         tg.close();
     } catch (e) {
-        tg.showAlert("❌ Ошибка при отправке");
-    } finally {
+        tg.showAlert("❌ Ошибка соединения");
         tg.MainButton.hideProgress();
     }
 });
