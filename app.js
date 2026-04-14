@@ -5,29 +5,35 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
-// 1. Навигация между страницами
+// Навигация
 window.showPage = function(pageId, element) {
-    document.getElementById('shop-page').style.display = 'none';
-    document.getElementById('info-page').style.display = 'none';
-    document.getElementById(pageId + '-page').style.display = 'block';
+    const shopPage = document.getElementById('shop-page');
+    const infoPage = document.getElementById('info-page');
+    
+    if (shopPage && infoPage) {
+        shopPage.style.display = 'none';
+        infoPage.style.display = 'none';
+        document.getElementById(pageId + '-page').style.display = 'block';
+    }
     
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (element) element.classList.add('active');
 };
 
-// 2. Открытие Instagram
 window.openInstagram = function() {
     tg.openLink("https://www.instagram.com/homelife_climate/");
 };
 
-// 3. Загрузка товаров из JSON
+// Загрузка товаров
 fetch('products.json')
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error("Ошибка загрузки JSON");
+        return res.json();
+    })
     .then(products => {
         window.allProducts = products;
         renderItems(products);
 
-        // Поиск по товарам
         const searchInput = document.getElementById('search');
         if (searchInput) {
             searchInput.oninput = (e) => {
@@ -35,22 +41,22 @@ fetch('products.json')
                 renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
             };
         }
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById('results').innerHTML = '<p style="text-align:center; padding:20px;">Ошибка загрузки товаров. Проверьте products.json</p>';
     });
 
-// 4. Отрисовка карточек товаров
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
+    if (!resultsDiv) return;
     resultsDiv.innerHTML = '';
     
     items.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
-        
-        // Генерируем ID без пробелов и спецсимволов для элементов
         const safeId = p.name.replace(/[^a-z0-9]/gi, '');
         const count = cart.filter(item => item.name === p.name).length;
-        
-        // Ссылка на картинку (заглушка, если пусто)
         const imgSrc = p.image && p.image !== "" ? p.image : "https://cdn-icons-png.flaticon.com/512/679/679821.png";
 
         card.innerHTML = `
@@ -59,17 +65,8 @@ function renderItems(items) {
             <div class="card-content">
                 <h3>${p.name}</h3>
                 <p class="price">${p.price.toLocaleString()} сум</p>
-                
                 <div class="buttons-container" id="btns-${safeId}">
-                    ${count > 0 ? `
-                        <div class="counter-btns">
-                            <button class="minus-btn" onclick="removeFromCart('${p.name}', ${p.price})">−</button>
-                            <span class="count-num">${count}</span>
-                            <button class="plus-btn" onclick="addToCart('${p.name}', ${p.price})">+</button>
-                        </div>
-                    ` : `
-                        <button class="main-add-btn" onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
-                    `}
+                    ${count > 0 ? renderCounter(p.name, p.price, count) : `<button class="main-add-btn" onclick="addToCart('${p.name}', ${p.price})">В корзину</button>`}
                 </div>
             </div>
         `;
@@ -77,5 +74,65 @@ function renderItems(items) {
     });
 }
 
-// 5. Добавление товара
-window.addToCart = function(name, price
+function renderCounter(name, price, count) {
+    return `
+        <div class="counter-btns">
+            <button class="minus-btn" onclick="removeFromCart('${name}', ${price})">−</button>
+            <span class="count-num">${count}</span>
+            <button class="plus-btn" onclick="addToCart('${name}', ${price})">+</button>
+        </div>
+    `;
+}
+
+window.addToCart = function(name, price) {
+    cart.push({ name, price });
+    updateCardUI(name);
+};
+
+window.removeFromCart = function(name, price) {
+    const index = cart.findLastIndex(item => item.name === name);
+    if (index > -1) cart.splice(index, 1);
+    updateCardUI(name);
+};
+
+function updateCardUI(name) {
+    const safeId = name.replace(/[^a-z0-9]/gi, '');
+    const count = cart.filter(item => item.name === name).length;
+    const product = window.allProducts.find(p => p.name === name);
+    
+    const badge = document.getElementById(`badge-${safeId}`);
+    if (badge) {
+        badge.innerText = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    const container = document.getElementById(`btns-${safeId}`);
+    if (container && product) {
+        container.innerHTML = count > 0 ? renderCounter(name, product.price, count) : `<button class="main-add-btn" onclick="addToCart('${name}', ${product.price})">В корзину</button>`;
+    }
+
+    const cartInfo = document.getElementById('cart-info');
+    if (cartInfo) cartInfo.innerText = `В заказе: ${cart.length} товаров`;
+    
+    if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
+}
+
+tg.onEvent('mainButtonClicked', async () => {
+    tg.MainButton.showProgress();
+    try {
+        await fetch(`${BACKEND_URL}/order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                customer: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Клиент",
+                items: cart,
+                total: cart.reduce((s, i) => s + i.price, 0)
+            })
+        });
+        tg.showAlert("✅ Заказ отправлен!");
+        tg.close();
+    } catch (e) {
+        tg.showAlert("❌ Ошибка отправки");
+        tg.MainButton.hideProgress();
+    }
+});
