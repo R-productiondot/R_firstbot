@@ -5,7 +5,7 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
-// Навигация
+// 1. Навигация
 window.showPage = function(pageId, element) {
     const shopPage = document.getElementById('shop-page');
     const infoPage = document.getElementById('info-page');
@@ -19,7 +19,7 @@ window.showPage = function(pageId, element) {
     if (element) element.classList.add('active');
 };
 
-// Инстаграм
+// 2. Инстаграм
 window.openInstagram = function() {
     const url = "https://www.instagram.com/homelife_climate/";
     if (tg.openLink) {
@@ -29,7 +29,7 @@ window.openInstagram = function() {
     }
 };
 
-// Загрузка товаров
+// 3. Загрузка товаров
 fetch('products.json')
     .then(res => res.json())
     .then(products => {
@@ -44,8 +44,9 @@ fetch('products.json')
             };
         }
     })
-    .catch(err => console.error("Ошибка JSON:", err));
+    .catch(err => console.error("Ошибка загрузки товаров:", err));
 
+// 4. Отрисовка товаров
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -56,7 +57,7 @@ function renderItems(items) {
         card.className = 'card';
         const safeId = p.name.replace(/[^a-z0-9]/gi, '');
         const count = cart.filter(item => item.name === p.name).length;
-        const imgSrc = p.image && p.image !== "" ? p.image : "https://cdn-icons-png.flaticon.com/512/679/679821.png";
+        const imgSrc = p.image || "https://cdn-icons-png.flaticon.com/512/679/679821.png";
 
         card.innerHTML = `
             <div class="badge" id="badge-${safeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
@@ -73,6 +74,7 @@ function renderItems(items) {
     });
 }
 
+// Вспомогательная функция для кнопок счетчика
 function renderCounter(name, price, count) {
     return `
         <div class="counter-btns">
@@ -83,6 +85,7 @@ function renderCounter(name, price, count) {
     `;
 }
 
+// 5. Добавление и удаление
 window.addToCart = function(name, price) {
     cart.push({ name, price });
     updateCardUI(name);
@@ -94,10 +97,10 @@ window.removeFromCart = function(name, price) {
     updateCardUI(name);
 };
 
+// 6. Обновление интерфейса
 function updateCardUI(name) {
     const safeId = name.replace(/[^a-z0-9]/gi, '');
     const count = cart.filter(item => item.name === name).length;
-    const product = window.allProducts.find(p => p.name === name);
     
     const badge = document.getElementById(`badge-${safeId}`);
     if (badge) {
@@ -106,7 +109,8 @@ function updateCardUI(name) {
     }
 
     const container = document.getElementById(`btns-${safeId}`);
-    if (container && product) {
+    if (container) {
+        const product = window.allProducts.find(p => p.name === name);
         container.innerHTML = count > 0 ? renderCounter(name, product.price, count) : `<button class="main-add-btn" onclick="addToCart('${name}', ${product.price})">В корзину</button>`;
     }
 
@@ -116,6 +120,7 @@ function updateCardUI(name) {
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
+// 7. Отправка заказа
 tg.onEvent('mainButtonClicked', async () => {
     tg.MainButton.showProgress();
     try {
@@ -131,7 +136,7 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.showAlert("✅ Заказ отправлен!");
         tg.close();
     } catch (e) {
-        tg.showAlert("❌ Ошибка");
+        tg.showAlert("❌ Ошибка при отправке");
         tg.MainButton.hideProgress();
     }
 });
