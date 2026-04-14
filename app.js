@@ -9,27 +9,29 @@ tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 window.showPage = function(pageId, element) {
     const shopPage = document.getElementById('shop-page');
     const infoPage = document.getElementById('info-page');
+    if (shopPage) shopPage.style.display = 'none';
+    if (infoPage) infoPage.style.display = 'none';
     
-    if (shopPage && infoPage) {
-        shopPage.style.display = 'none';
-        infoPage.style.display = 'none';
-        document.getElementById(pageId + '-page').style.display = 'block';
-    }
+    const targetPage = document.getElementById(pageId + '-page');
+    if (targetPage) targetPage.style.display = 'block';
     
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (element) element.classList.add('active');
 };
 
+// Инстаграм
 window.openInstagram = function() {
-    tg.openLink("https://www.instagram.com/homelife_climate/");
+    const url = "https://www.instagram.com/homelife_climate/";
+    if (tg.openLink) {
+        tg.openLink(url);
+    } else {
+        window.open(url, '_blank');
+    }
 };
 
 // Загрузка товаров
 fetch('products.json')
-    .then(res => {
-        if (!res.ok) throw new Error("Ошибка загрузки JSON");
-        return res.json();
-    })
+    .then(res => res.json())
     .then(products => {
         window.allProducts = products;
         renderItems(products);
@@ -42,10 +44,7 @@ fetch('products.json')
             };
         }
     })
-    .catch(err => {
-        console.error(err);
-        document.getElementById('results').innerHTML = '<p style="text-align:center; padding:20px;">Ошибка загрузки товаров. Проверьте products.json</p>';
-    });
+    .catch(err => console.error("Ошибка JSON:", err));
 
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
@@ -132,7 +131,7 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.showAlert("✅ Заказ отправлен!");
         tg.close();
     } catch (e) {
-        tg.showAlert("❌ Ошибка отправки");
+        tg.showAlert("❌ Ошибка");
         tg.MainButton.hideProgress();
     }
 });
