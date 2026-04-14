@@ -32,19 +32,18 @@ fetch('products.json')
             renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
         };
     });
-
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
     items.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
-        // Уникальный ID для бейджа каждого товара
         const badgeId = `badge-${p.name.replace(/\s+/g, '')}`;
         const count = cart.filter(item => item.name === p.name).length;
         
         card.innerHTML = `
             <div class="badge" id="${badgeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
+            <img src="${p.image}" alt="${p.name}" class="product-img">
             <h3>${p.name}</h3>
             <p>${p.price.toLocaleString()} сум</p>
             <button onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
