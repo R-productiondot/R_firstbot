@@ -204,3 +204,17 @@ body {
     color: #3B0008;
     font-weight: 700;
 }
+.product-img {
+    width: 100%;       /* Растягиваем на всю ширину карточки */
+    height: 120px;     /* Фиксированная высота, чтобы карточки были ровными */
+    object-fit: contain; /* Картинка не будет обрезаться или растягиваться уродливо */
+    margin-bottom: 10px;
+    border-radius: 10px; /* Скругляем углы у самого фото */
+}
+
+.card {
+    /* Убедись, что у карточки есть padding и overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
