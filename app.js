@@ -5,7 +5,7 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
-// Навигация между страницами
+// Навигация
 window.showPage = function(pageId, element) {
     document.getElementById('shop-page').style.display = 'none';
     document.getElementById('info-page').style.display = 'none';
@@ -15,12 +15,11 @@ window.showPage = function(pageId, element) {
     if (element) element.classList.add('active');
 };
 
-// Открытие Instagram через API Telegram
 window.openInstagram = function() {
     tg.openLink("https://www.instagram.com/homelife_climate/");
 };
 
-// Загрузка и отрисовка товаров
+// Загрузка товаров
 fetch('products.json')
     .then(res => res.json())
     .then(products => {
@@ -32,31 +31,37 @@ fetch('products.json')
             renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
         };
     });
+
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
     items.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
-        const badgeId = `badge-${p.name.replace(/\s+/g, '')}`;
+        const badgeId = `badge-${p.name.replace(/[^a-z0-9]/gi, '')}`;
         const count = cart.filter(item => item.name === p.name).length;
         
+        // Если картинки нет, подставим иконку-заглушку
+        const imgSrc = p.image && p.image !== "" ? p.image : "https://cdn-icons-png.flaticon.com/512/679/679821.png";
+
         card.innerHTML = `
             <div class="badge" id="${badgeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
-            <img src="${p.image}" alt="${p.name}" class="product-img">
-            <h3>${p.name}</h3>
-            <p>${p.price.toLocaleString()} сум</p>
-            <button onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
+            <img src="${imgSrc}" class="product-img">
+            <div class="card-content">
+                <h3>${p.name}</h3>
+                <p class="category">${p.category}</p>
+                <p class="price">${p.price.toLocaleString()} сум</p>
+                <button onclick="addToCart('${p.name}', ${p.price})">В корзину</button>
+            </div>
         `;
         resultsDiv.appendChild(card);
     });
 }
 
-// Добавление в корзину и обновление счетчика
 window.addToCart = function(name, price) {
     cart.push({ name, price });
     
-    const badgeId = `badge-${name.replace(/\s+/g, '')}`;
+    const badgeId = `badge-${name.replace(/[^a-z0-9]/gi, '')}`;
     const badge = document.getElementById(badgeId);
     const count = cart.filter(item => item.name === name).length;
     
@@ -69,7 +74,6 @@ window.addToCart = function(name, price) {
     tg.MainButton.show();
 };
 
-// Отправка данных на сервер
 tg.onEvent('mainButtonClicked', async () => {
     tg.MainButton.showProgress();
     const user = tg.initDataUnsafe.user;
