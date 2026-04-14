@@ -218,3 +218,46 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+
+.counter-btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.minus-btn, .plus-btn {
+    background: #3B0008;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.count-num {
+    font-weight: 700;
+    color: #3B0008;
+    font-size: 16px;
+    padding: 0 10px;
+}
+
+.main-add-btn {
+    background: #3B0008;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+}
+
+.minus-btn:active, .plus-btn:active, .main-add-btn:active {
+    opacity: 0.7;
+    transform: scale(0.95);
+}
