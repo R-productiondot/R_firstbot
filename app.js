@@ -5,7 +5,7 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
-// 1. Навигация по страницам
+// 1. Навигация
 window.showPage = function(pageId, element) {
     if (pageId === 'profile') renderHistory();
 
@@ -16,7 +16,6 @@ window.showPage = function(pageId, element) {
     });
     
     document.getElementById(pageId + '-page').style.display = 'block';
-    
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (element) element.classList.add('active');
 };
@@ -35,10 +34,9 @@ fetch('products.json')
                 renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
             };
         }
-    })
-    .catch(err => console.error("Ошибка загрузки товаров:", err));
+    });
 
-// 3. Отрисовка товаров в магазине
+// 3. Отрисовка товаров
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -49,15 +47,14 @@ function renderItems(items) {
         card.className = 'card';
         const safeId = p.name.replace(/[^a-z0-9]/gi, '');
         const count = cart.filter(item => item.name === p.name).length;
-        const imgSrc = p.image || "https://cdn-icons-png.flaticon.com/512/679/679821.png";
 
         card.innerHTML = `
             <div class="badge" id="badge-${safeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
-            <img src="${imgSrc}" class="product-img">
+            <img src="${p.image || ''}" class="product-img">
             <div class="card-content">
                 <h3>${p.name}</h3>
                 <p class="price">${p.price.toLocaleString()} сум</p>
-                <div class="buttons-container" id="btns-${safeId}">
+                <div id="btns-${safeId}">
                     ${count > 0 ? renderCounter(p.name, p.price, count) : `<button class="main-add-btn" onclick="addToCart('${p.name}', ${p.price})">В корзину</button>`}
                 </div>
             </div>
@@ -103,14 +100,13 @@ function updateCardUI(name) {
         const product = window.allProducts.find(p => p.name === name);
         container.innerHTML = count > 0 ? renderCounter(name, product.price, count) : `<button class="main-add-btn" onclick="addToCart('${name}', ${product.price})">В корзину</button>`;
     }
-
+    
     const cartInfo = document.getElementById('cart-info');
     if (cartInfo) cartInfo.innerText = `В заказе: ${cart.length} товаров`;
-    
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
-// 5. Исправленная история заказов (каждый товар с новой строки)
+// 5. Умная история заказов (Группировка по количеству)
 function renderHistory() {
     const historyDiv = document.getElementById('order-history');
     if (!historyDiv) return;
@@ -122,14 +118,25 @@ function renderHistory() {
     }
 
     historyDiv.innerHTML = history.map(order => {
-        // Создаем список товаров через <br>
-        const itemsHtml = order.items.map(item => `• ${item.name}`).join('<br>');
+        // Группируем товары, чтобы не было дублей строк
+        const counts = {};
+        order.items.forEach(item => {
+            counts[item.name] = (counts[item.name] || 0) + 1;
+        });
+
+        const itemsHtml = Object.keys(counts).map(name => {
+            return `<div class="history-row">
+                <span class="dot">•</span>
+                <span class="item-name">${name}</span>
+                <span class="item-qty">${counts[name]} шт.</span>
+            </div>`;
+        }).join('');
         
         return `
         <div class="history-card">
             <div class="history-date">${order.date}</div>
-            <div class="history-total">Заказ на ${order.total.toLocaleString()} сум</div>
-            <div class="history-items-list">${itemsHtml}</div>
+            <div class="history-total">Итого: ${order.total.toLocaleString()} сум</div>
+            <div class="history-items-container">${itemsHtml}</div>
         </div>
         `;
     }).join('');
@@ -167,12 +174,12 @@ tg.onEvent('mainButtonClicked', async () => {
         tg.showAlert("✅ Заказ отправлен!", () => {
             cart = []; 
             updateCardUI(""); 
-            renderHistory(); // Обновляем список перед переходом
+            renderHistory();
             showPage('profile', document.querySelectorAll('.nav-item')[2]);
         });
 
     } catch (e) {
-        tg.showAlert("❌ Ошибка отправки");
+        tg.showAlert("❌ Ошибка");
     } finally {
         tg.MainButton.hideProgress();
     }
