@@ -111,30 +111,45 @@ function renderHistory() {
     const history = JSON.parse(localStorage.getItem('order_history') || "[]");
 
     if (history.length === 0) {
-        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">История заказов пуста</p>';
+        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">Заказов пока нет</p>';
         return;
     }
 
     historyDiv.innerHTML = history.map(order => {
-        // Группируем одинаковые товары
+        // Группируем товары
         const counts = {};
         order.items.forEach(item => {
             counts[item.name] = (counts[item.name] || 0) + 1;
         });
 
-        // Создаем строки: название отдельно, количество в кружочке отдельно
-        const itemsHtml = Object.keys(counts).map(name => `
-            <div class="order-item-line">
-                <div class="order-item-name">${name}</div>
-                <div class="order-item-qty-badge">${counts[name]}</div>
-            </div>
-        `).join('');
+        const itemsHtml = Object.keys(counts).map(name => {
+            // Ищем данные о товаре (цену и картинку) из общего списка
+            const productInfo = window.allProducts.find(p => p.name === name) || {};
+            const itemTotal = (productInfo.price || 0) * counts[name];
+
+            return `
+            <div class="uzum-item">
+                <img src="${productInfo.image || ''}" class="uzum-img">
+                <div class="uzum-info">
+                    <div class="uzum-name">${name}</div>
+                    <div class="uzum-controls">
+                        <div class="uzum-qty-badge">${counts[name]} шт.</div>
+                        <div class="uzum-price">${itemTotal.toLocaleString()} сум</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
         
         return `
-        <div class="history-card">
-            <div class="history-date">${order.date}</div>
-            <div class="history-total">ИТОГО: ${order.total.toLocaleString()} сум</div>
-            <div class="history-items-box">${itemsHtml}</div>
+        <div class="uzum-card">
+            <div class="uzum-card-header">
+                <span class="uzum-date">${order.date}</span>
+                <span class="uzum-status">Доставлено</span>
+            </div>
+            <div class="uzum-items-list">${itemsHtml}</div>
+            <div class="uzum-card-footer">
+                Итого: <b>${order.total.toLocaleString()} сум</b>
+            </div>
         </div>
         `;
     }).join('');
