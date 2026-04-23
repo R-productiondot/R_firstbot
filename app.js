@@ -7,7 +7,6 @@ tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
 // 1. Навигация по страницам
 window.showPage = function(pageId, element) {
-    // Если заходим в заказы, обновляем список из памяти
     if (pageId === 'profile') renderHistory();
 
     const pages = ['shop-page', 'info-page', 'profile-page'];
@@ -18,12 +17,11 @@ window.showPage = function(pageId, element) {
     
     document.getElementById(pageId + '-page').style.display = 'block';
     
-    // Подсветка активной кнопки в меню
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (element) element.classList.add('active');
 };
 
-// 2. Загрузка товаров из JSON
+// 2. Загрузка товаров
 fetch('products.json')
     .then(res => res.json())
     .then(products => {
@@ -40,7 +38,7 @@ fetch('products.json')
     })
     .catch(err => console.error("Ошибка загрузки товаров:", err));
 
-// 3. Отрисовка товаров
+// 3. Отрисовка товаров в магазине
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -68,7 +66,6 @@ function renderItems(items) {
     });
 }
 
-// Шаблон кнопок + / -
 function renderCounter(name, price, count) {
     return `
         <div class="counter-btns">
@@ -113,7 +110,7 @@ function updateCardUI(name) {
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
-// 5. История заказов (LocalStorage)
+// 5. Исправленная история заказов (каждый товар с новой строки)
 function renderHistory() {
     const historyDiv = document.getElementById('order-history');
     if (!historyDiv) return;
@@ -125,14 +122,14 @@ function renderHistory() {
     }
 
     historyDiv.innerHTML = history.map(order => {
-        // Делаем список товаров аккуратным
-        const itemsList = order.items.map(i => `• ${i.name}`).join('<br>');
+        // Создаем список товаров через <br>
+        const itemsHtml = order.items.map(item => `• ${item.name}`).join('<br>');
         
         return `
         <div class="history-card">
             <div class="history-date">${order.date}</div>
             <div class="history-total">Заказ на ${order.total.toLocaleString()} сум</div>
-            <div class="history-items">${itemsList}</div>
+            <div class="history-items-list">${itemsHtml}</div>
         </div>
         `;
     }).join('');
@@ -163,16 +160,14 @@ tg.onEvent('mainButtonClicked', async () => {
             })
         });
 
-        // Сохраняем в историю телефона
         let history = JSON.parse(localStorage.getItem('order_history') || "[]");
         history.unshift(orderData);
         localStorage.setItem('order_history', JSON.stringify(history));
 
         tg.showAlert("✅ Заказ отправлен!", () => {
-            cart = []; // Очистка
+            cart = []; 
             updateCardUI(""); 
-            renderHistory(); // Обновляем список заказов
-            // Переключаемся на страницу заказов
+            renderHistory(); // Обновляем список перед переходом
             showPage('profile', document.querySelectorAll('.nav-item')[2]);
         });
 
