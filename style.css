@@ -1,42 +1,26 @@
 body {
     font-family: 'Montserrat', sans-serif;
     margin: 0;
-    padding: 0;
-    /* Глубокий матовый Бургунди с текстурой шума */
-    background: radial-gradient(circle, #5E000C 0%, #3B0008 100%);
-    background-image: 
-        linear-gradient(rgba(77, 0, 10, 0.9), rgba(77, 0, 10, 0.9)), 
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    background-attachment: fixed;
+    background-color: #3B0008; /* Твой бордовый фон */
     color: white;
-    padding-bottom: 120px;
+    padding-bottom: 70px;
 }
 
 .header {
-    padding: 40px 20px 20px;
     text-align: center;
-}
-
-.header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -1px;
+    padding: 20px;
 }
 
 #search {
     width: 90%;
-    max-width: 350px;
-    padding: 14px 20px;
-    border-radius: 25px;
-    border: 1px solid rgba(255,255,255,0.2);
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
     background: rgba(255,255,255,0.1);
     color: white;
-    font-family: 'Montserrat', sans-serif;
-    backdrop-filter: blur(5px);
+    outline: none;
 }
 
-/* Карточки товаров */
 #results {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -46,177 +30,33 @@ body {
 
 .card {
     background: white;
-    border-radius: 24px; /* Глубокое скругление */
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    color: #3B0008;
-}
-
-.card h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 0 10px;
-}
-
-.card p {
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.card button {
-    background: #3B0008;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 12px;
-    width: 100%;
-}
-
-/* Анимация перехода */
-.page {
-    animation: fadeIn 0.4s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Парящее меню навигации */
-.nav-menu {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: rgba(255,255,255,0.95);
-    border-radius: 30px;
-    display: flex;
-    justify-content: space-around;
-    padding: 12px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
-}
-
-.nav-item {
-    text-align: center;
-    color: #999;
-    transition: 0.3s;
-}
-
-.nav-item.active {
-    color: #5E000C;
-    transform: scale(1.1);
-}
-
-.nav-item p {
-    margin: 0;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.info-content {
-    margin: 20px;
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.instagram-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 15px;
-    font-weight: 600;
-    font-size: 14px;
-    margin: 20px 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease;
-}
-
-.instagram-button:active {
-    transform: scale(0.95);
-}
-
-.info-details {
-    margin-top: 20px;
-}
-
-/* Бейдж (кружок с числом) в углу карточки */
-.badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #2ecc71; /* Зеленый цвет для счетчика */
-    color: white;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: none; /* Скрыт, пока товара нет в корзине */
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    border: 2px solid white;
-    z-index: 5;
-}
-
-.card {
-    position: relative; /* Чтобы бейдж не улетал */
-    background: white;
     border-radius: 20px;
-    padding: 15px;
+    padding: 12px;
     color: #333;
-    margin-bottom: 10px;
-}
-
-/* Навигация снизу */
-.nav-menu {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-}
-
-.nav-item {
-    text-align: center;
-    color: #888;
-    font-size: 11px;
-    cursor: pointer;
-}
-
-.nav-item.active {
-    color: #3B0008;
-    font-weight: 700;
-}
-.product-img {
-    width: 100%;       /* Растягиваем на всю ширину карточки */
-    height: 120px;     /* Фиксированная высота, чтобы карточки были ровными */
-    object-fit: contain; /* Картинка не будет обрезаться или растягиваться уродливо */
-    margin-bottom: 10px;
-    border-radius: 10px; /* Скругляем углы у самого фото */
-}
-
-.card {
-    /* Убедись, что у карточки есть padding и overflow */
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.product-img {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.card h3 { font-size: 12px; margin: 5px 0; height: 32px; overflow: hidden; }
+.price { font-weight: 700; color: #3B0008; margin-bottom: 10px; }
+
+.main-add-btn {
+    width: 100%;
+    background: #3B0008;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
 .counter-btns {
@@ -224,40 +64,68 @@ body {
     align-items: center;
     justify-content: space-between;
     background: #f0f0f0;
-    border-radius: 12px;
-    overflow: hidden;
+    border-radius: 10px;
 }
 
 .minus-btn, .plus-btn {
     background: #3B0008;
     color: white;
     border: none;
-    width: 35px;
-    height: 35px;
-    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     font-weight: bold;
-    cursor: pointer;
 }
 
-.count-num {
-    font-weight: 700;
-    color: #3B0008;
-    font-size: 16px;
-    padding: 0 10px;
-}
-
-.main-add-btn {
-    background: #3B0008;
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #2ecc71;
     color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    width: 100%;
-    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    border: 2px solid white;
 }
 
-.minus-btn:active, .plus-btn:active, .main-add-btn:active {
-    opacity: 0.7;
-    transform: scale(0.95);
+.nav-menu {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 10px 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
+
+.nav-item { text-align: center; color: #888; font-size: 11px; cursor: pointer; }
+.nav-item.active { color: #3B0008; font-weight: 700; }
+.nav-item span { font-size: 20px; }
+
+.info-card, .history-item {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.history-item { margin-bottom: 10px; border-left: 4px solid #2ecc71; }
+
+.instagram-button {
+    background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+#cart-info { text-align: center; padding: 10px; font-weight: 600; }
