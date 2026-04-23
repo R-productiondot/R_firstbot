@@ -36,7 +36,7 @@ fetch('products.json')
         }
     });
 
-// 3. Отрисовка товаров
+// 3. Отрисовка товаров в магазине
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -101,41 +101,40 @@ function updateCardUI(name) {
         container.innerHTML = count > 0 ? renderCounter(name, product.price, count) : `<button class="main-add-btn" onclick="addToCart('${name}', ${product.price})">В корзину</button>`;
     }
     
-    const cartInfo = document.getElementById('cart-info');
-    if (cartInfo) cartInfo.innerText = `В заказе: ${cart.length} товаров`;
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
-// 5. Умная история заказов (Группировка по количеству)
+// 5. ИСТОРИЯ ЗАКАЗОВ (Исправленная логика с кружочками)
 function renderHistory() {
     const historyDiv = document.getElementById('order-history');
     if (!historyDiv) return;
     const history = JSON.parse(localStorage.getItem('order_history') || "[]");
 
     if (history.length === 0) {
-        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">Заказов пока нет</p>';
+        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">История заказов пуста</p>';
         return;
     }
 
     historyDiv.innerHTML = history.map(order => {
+        // Группируем одинаковые товары
         const counts = {};
         order.items.forEach(item => {
             counts[item.name] = (counts[item.name] || 0) + 1;
         });
 
-        const itemsHtml = Object.keys(counts).map(name => {
-            return `
-            <div class="history-item-row">
-                <div class="item-name-box">${name}</div>
-                <div class="item-qty-circle">${counts[name]}</div>
-            </div>`;
-        }).join('');
+        // Создаем строки: название отдельно, количество в кружочке отдельно
+        const itemsHtml = Object.keys(counts).map(name => `
+            <div class="order-item-line">
+                <div class="order-item-name">${name}</div>
+                <div class="order-item-qty-badge">${counts[name]}</div>
+            </div>
+        `).join('');
         
         return `
         <div class="history-card">
             <div class="history-date">${order.date}</div>
             <div class="history-total">ИТОГО: ${order.total.toLocaleString()} сум</div>
-            <div class="history-list-container">${itemsHtml}</div>
+            <div class="history-items-box">${itemsHtml}</div>
         </div>
         `;
     }).join('');
@@ -178,7 +177,7 @@ tg.onEvent('mainButtonClicked', async () => {
         });
 
     } catch (e) {
-        tg.showAlert("❌ Ошибка");
+        tg.showAlert("❌ Ошибка отправки");
     } finally {
         tg.MainButton.hideProgress();
     }
