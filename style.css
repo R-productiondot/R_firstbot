@@ -272,3 +272,82 @@ body {
 }
 }
 #cart-info { text-align: center; padding: 10px; font-weight: 600; }
+
+/* Общая карточка заказа */
+.uzum-card {
+    background: #fff;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    padding: 12px;
+    color: #000; /* Текст внутри карточки черный для контраста */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.uzum-card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.uzum-date { color: #888; }
+.uzum-status { color: #2ecc71; font-weight: bold; }
+
+/* Строка одного товара */
+.uzum-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.uzum-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.uzum-info {
+    flex: 1;
+}
+
+.uzum-name {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.uzum-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uzum-qty-badge {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #555;
+}
+
+.uzum-price {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.uzum-card-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dotted #ccc;
+    text-align: right;
+    font-size: 15px;
+}
