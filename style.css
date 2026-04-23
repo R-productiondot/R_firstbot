@@ -413,3 +413,67 @@ body {
     font-size: 14px;
     color: #222;
 }
+/* Карточка заказа в цвете Parchment */
+.m-card {
+    background: #FCF5E5; /* Цвет Пергамента */
+    border-radius: 14px;
+    margin-bottom: 18px;
+    padding: 14px;
+    color: #3E3B30; /* Темно-коричневый текст для мягкости */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.m-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #8C8675;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.m-status { color: #5B8C5A; font-weight: bold; }
+
+.m-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.m-img {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.05);
+}
+
+.m-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+.m-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #2D2A22;
+}
+
+.m-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.m-qty { font-size: 11px; color: #7A7461; }
+.m-price { font-size: 13px; font-weight: bold; color: #1A1814; }
+
+.m-footer {
+    margin-top: 10px;
+    text-align: right;
+    font-size: 15px;
+    color: #1A1814;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+    padding-top: 8px;
+}
