@@ -26,7 +26,7 @@ fetch('products.json')
         renderItems(products);
     });
 
-// 3. Отрисовка витрины
+// 3. Отрисовка товаров
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -59,7 +59,7 @@ function renderCounter(name, price, count) {
     </div>`;
 }
 
-// 4. Логика корзины
+// 4. Корзина
 window.addToCart = function(name, price) {
     cart.push({ name, price });
     updateCardUI(name);
@@ -87,14 +87,14 @@ function updateCardUI(name) {
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
-// 5. КРАСИВАЯ ИСТОРИЯ ЗАКАЗОВ (КАК В МАРКЕТПЛЕЙСЕ)
+// 5. История в стиле Parchment
 function renderHistory() {
     const historyDiv = document.getElementById('order-history');
     if (!historyDiv) return;
     const history = JSON.parse(localStorage.getItem('order_history') || "[]");
 
     if (history.length === 0) {
-        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">Заказов пока нет</p>';
+        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">Заказов нет</p>';
         return;
     }
 
@@ -112,7 +112,7 @@ function renderHistory() {
                 <div class="m-info">
                     <div class="m-title">${name}</div>
                     <div class="m-details">
-                        <div class="m-qty">Кол-во: ${counts[name]} шт.</div>
+                        <div class="m-qty">${counts[name]} шт.</div>
                         <div class="m-price">${(product.price * counts[name]).toLocaleString()} сум</div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ function renderHistory() {
         <div class="m-card">
             <div class="m-header">
                 <span class="m-date">${order.date}</span>
-                <span class="m-status">Заказ принят</span>
+                <span class="m-status">Обработан</span>
             </div>
             <div class="m-list">${itemsHtml}</div>
             <div class="m-footer">Итого: <b>${order.total.toLocaleString()} сум</b></div>
@@ -160,7 +160,7 @@ tg.onEvent('mainButtonClicked', async () => {
             showPage('profile', document.querySelectorAll('.nav-item')[2]);
         });
     } catch (e) {
-        tg.showAlert("❌ Ошибка");
+        tg.showAlert("Ошибка");
     } finally {
         tg.MainButton.hideProgress();
     }
