@@ -118,25 +118,24 @@ function renderHistory() {
     }
 
     historyDiv.innerHTML = history.map(order => {
-        // Группируем товары, чтобы не было дублей строк
         const counts = {};
         order.items.forEach(item => {
             counts[item.name] = (counts[item.name] || 0) + 1;
         });
 
         const itemsHtml = Object.keys(counts).map(name => {
-            return `<div class="history-row">
-                <span class="dot">•</span>
-                <span class="item-name">${name}</span>
-                <span class="item-qty">${counts[name]} шт.</span>
+            return `
+            <div class="history-item-row">
+                <div class="item-name-box">${name}</div>
+                <div class="item-qty-circle">${counts[name]}</div>
             </div>`;
         }).join('');
         
         return `
         <div class="history-card">
             <div class="history-date">${order.date}</div>
-            <div class="history-total">Итого: ${order.total.toLocaleString()} сум</div>
-            <div class="history-items-container">${itemsHtml}</div>
+            <div class="history-total">ИТОГО: ${order.total.toLocaleString()} сум</div>
+            <div class="history-list-container">${itemsHtml}</div>
         </div>
         `;
     }).join('');
