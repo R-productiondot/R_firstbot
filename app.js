@@ -130,9 +130,13 @@ tg.onEvent('mainButtonClicked', async () => {
         let history = JSON.parse(localStorage.getItem('order_history') || "[]");
         history.unshift(orderData);
         localStorage.setItem('order_history', JSON.stringify(history));
-        tg.showAlert("✅ Заказ отправлен!");
-        cart = [];
-        tg.close();
+      tg.showAlert("✅ Заказ отправлен!", () => {
+            // Этот код сработает, когда пользователь нажмет кнопку "ОК" в алерте
+            cart = []; // Очищаем корзину
+            updateCardUI(""); // Обновляем интерфейс кнопок
+            showPage('profile', document.querySelectorAll('.nav-item')[2]); // Переходим на вкладку Заказы
+        });
+        // tg.close(); // Убираем закрытие, чтобы человек увидел историю
     } catch (e) {
         tg.showAlert("❌ Ошибка");
         tg.MainButton.hideProgress();
