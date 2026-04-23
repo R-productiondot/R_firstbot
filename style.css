@@ -159,5 +159,38 @@ body {
     color: rgba(255, 255, 255, 0.8);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 10px;
+
+    /* Контейнер для всей карточки заказа */
+.history-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 5px solid #2ecc71; /* Зеленая полоска слева */
+}
+
+/* Стиль даты */
+.history-date {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-bottom: 5px;
+}
+
+/* Стиль суммы заказа */
+.history-total {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+/* Стиль списка товаров */
+.history-items-list {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+}
 }
 #cart-info { text-align: center; padding: 10px; font-weight: 600; }
