@@ -28,6 +28,12 @@
             <p>📞 +998 (90) 123-45-67</p>
         </div>
     </div>
+    <div id="profile-page" class="page" style="display: none; padding: 20px;">
+    <div class="header"><h1>Мои заказы</h1></div>
+    <div id="order-history" style="color: white;">
+        <p style="opacity: 0.6; text-align: center;">История заказов пуста</p>
+    </div>
+</div>
 
     <div class="nav-menu">
         <div class="nav-item active" onclick="showPage('shop', this)">
@@ -41,4 +47,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="app.js"></script>
 </body>
+
+<div class="nav-item" onclick="showPage('profile', this)">
+    <span>👤</span><p>Профиль</p>
+</div>
 </html>
