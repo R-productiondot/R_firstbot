@@ -415,7 +415,7 @@ body {
 }
 /* Карточка заказа в цвете Parchment */
 .m-card {
-    background: #FCF5E5; /* Цвет Пергамента */
+    background:#FAEBD7; /* Цвет Пергамента */
     border-radius: 14px;
     margin-bottom: 18px;
     padding: 14px;
