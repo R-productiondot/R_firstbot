@@ -5,8 +5,9 @@ const BACKEND_URL = "https://r-firstbot.onrender.com";
 tg.expand();
 tg.MainButton.setText("ПОДТВЕРДИТЬ ЗАКАЗ");
 
-// Навигация
+// 1. Навигация по страницам
 window.showPage = function(pageId, element) {
+    // Если заходим в заказы, обновляем список из памяти
     if (pageId === 'profile') renderHistory();
 
     const pages = ['shop-page', 'info-page', 'profile-page'];
@@ -16,39 +17,49 @@ window.showPage = function(pageId, element) {
     });
     
     document.getElementById(pageId + '-page').style.display = 'block';
+    
+    // Подсветка активной кнопки в меню
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     if (element) element.classList.add('active');
 };
 
-// Загрузка товаров
+// 2. Загрузка товаров из JSON
 fetch('products.json')
     .then(res => res.json())
     .then(products => {
         window.allProducts = products;
         renderItems(products);
-        document.getElementById('search').oninput = (e) => {
-            const val = e.target.value.toLowerCase();
-            renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
-        };
-    });
 
+        const searchInput = document.getElementById('search');
+        if (searchInput) {
+            searchInput.oninput = (e) => {
+                const val = e.target.value.toLowerCase();
+                renderItems(window.allProducts.filter(p => p.name.toLowerCase().includes(val)));
+            };
+        }
+    })
+    .catch(err => console.error("Ошибка загрузки товаров:", err));
+
+// 3. Отрисовка товаров
 function renderItems(items) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
     resultsDiv.innerHTML = '';
+    
     items.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
         const safeId = p.name.replace(/[^a-z0-9]/gi, '');
         const count = cart.filter(item => item.name === p.name).length;
-        
+        const imgSrc = p.image || "https://cdn-icons-png.flaticon.com/512/679/679821.png";
+
         card.innerHTML = `
             <div class="badge" id="badge-${safeId}" style="display: ${count > 0 ? 'flex' : 'none'}">${count}</div>
-            <img src="${p.image || 'https://cdn-icons-png.flaticon.com/512/679/679821.png'}" class="product-img">
+            <img src="${imgSrc}" class="product-img">
             <div class="card-content">
                 <h3>${p.name}</h3>
                 <p class="price">${p.price.toLocaleString()} сум</p>
-                <div id="btns-${safeId}">
+                <div class="buttons-container" id="btns-${safeId}">
                     ${count > 0 ? renderCounter(p.name, p.price, count) : `<button class="main-add-btn" onclick="addToCart('${p.name}', ${p.price})">В корзину</button>`}
                 </div>
             </div>
@@ -57,14 +68,18 @@ function renderItems(items) {
     });
 }
 
+// Шаблон кнопок + / -
 function renderCounter(name, price, count) {
-    return `<div class="counter-btns">
-        <button class="minus-btn" onclick="removeFromCart('${name}', ${price})">−</button>
-        <span class="count-num">${count}</span>
-        <button class="plus-btn" onclick="addToCart('${name}', ${price})">+</button>
-    </div>`;
+    return `
+        <div class="counter-btns">
+            <button class="minus-btn" onclick="removeFromCart('${name}', ${price})">−</button>
+            <span class="count-num">${count}</span>
+            <button class="plus-btn" onclick="addToCart('${name}', ${price})">+</button>
+        </div>
+    `;
 }
 
+// 4. Логика корзины
 window.addToCart = function(name, price) {
     cart.push({ name, price });
     updateCardUI(name);
@@ -79,45 +94,60 @@ window.removeFromCart = function(name, price) {
 function updateCardUI(name) {
     const safeId = name.replace(/[^a-z0-9]/gi, '');
     const count = cart.filter(item => item.name === name).length;
+    
     const badge = document.getElementById(`badge-${safeId}`);
     if (badge) {
         badge.innerText = count;
         badge.style.display = count > 0 ? 'flex' : 'none';
     }
+
     const container = document.getElementById(`btns-${safeId}`);
     if (container) {
         const product = window.allProducts.find(p => p.name === name);
         container.innerHTML = count > 0 ? renderCounter(name, product.price, count) : `<button class="main-add-btn" onclick="addToCart('${name}', ${product.price})">В корзину</button>`;
     }
-    document.getElementById('cart-info').innerText = `В заказе: ${cart.length} товаров`;
+
+    const cartInfo = document.getElementById('cart-info');
+    if (cartInfo) cartInfo.innerText = `В заказе: ${cart.length} товаров`;
+    
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
+// 5. История заказов (LocalStorage)
 function renderHistory() {
     const historyDiv = document.getElementById('order-history');
+    if (!historyDiv) return;
     const history = JSON.parse(localStorage.getItem('order_history') || "[]");
-    if (history.length === 0) return;
+
+    if (history.length === 0) {
+        historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; color: white; margin-top: 50px;">Заказов пока нет</p>';
+        return;
+    }
 
     historyDiv.innerHTML = history.map(order => `
-        <div class="history-item">
-            <div style="font-size: 10px; opacity: 0.5;">${order.date}</div>
-            <div style="font-weight: 700; margin: 4px 0;">Заказ: ${order.total.toLocaleString()} сум</div>
-            <div style="font-size: 12px;">${order.items.map(i => i.name).join(', ')}</div>
+        <div class="history-item" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid #2ecc71; color: white;">
+            <div style="font-size: 11px; opacity: 0.6;">${order.date}</div>
+            <div style="font-weight: bold; margin: 5px 0;">Заказ на ${order.total.toLocaleString()} сум</div>
+            <div style="font-size: 12px; opacity: 0.9;">${order.items.map(i => i.name).join(', ')}</div>
         </div>
     `).join('');
 }
 
+// 6. Контакты
 window.openInstagram = function() {
     tg.openLink("https://www.instagram.com/homelife_climate/");
 };
 
+// 7. Отправка заказа
 tg.onEvent('mainButtonClicked', async () => {
     tg.MainButton.showProgress();
+    
     const orderData = {
         date: new Date().toLocaleString(),
         items: [...cart],
         total: cart.reduce((s, i) => s + i.price, 0)
     };
+
     try {
         await fetch(`${BACKEND_URL}/order`, {
             method: "POST",
@@ -127,18 +157,23 @@ tg.onEvent('mainButtonClicked', async () => {
                 ...orderData
             })
         });
+
+        // Сохраняем в историю телефона
         let history = JSON.parse(localStorage.getItem('order_history') || "[]");
         history.unshift(orderData);
         localStorage.setItem('order_history', JSON.stringify(history));
-      tg.showAlert("✅ Заказ отправлен!", () => {
-            // Этот код сработает, когда пользователь нажмет кнопку "ОК" в алерте
-            cart = []; // Очищаем корзину
-            updateCardUI(""); // Обновляем интерфейс кнопок
-            showPage('profile', document.querySelectorAll('.nav-item')[2]); // Переходим на вкладку Заказы
+
+        tg.showAlert("✅ Заказ отправлен!", () => {
+            cart = []; // Очистка
+            updateCardUI(""); 
+            renderHistory(); // Обновляем список заказов
+            // Переключаемся на страницу заказов
+            showPage('profile', document.querySelectorAll('.nav-item')[2]);
         });
-        // tg.close(); // Убираем закрытие, чтобы человек увидел историю
+
     } catch (e) {
-        tg.showAlert("❌ Ошибка");
+        tg.showAlert("❌ Ошибка отправки");
+    } finally {
         tg.MainButton.hideProgress();
     }
 });
