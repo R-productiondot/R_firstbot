@@ -124,13 +124,18 @@ function renderHistory() {
         return;
     }
 
-    historyDiv.innerHTML = history.map(order => `
-        <div class="history-item" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid #2ecc71; color: white;">
-            <div style="font-size: 11px; opacity: 0.6;">${order.date}</div>
-            <div style="font-weight: bold; margin: 5px 0;">Заказ на ${order.total.toLocaleString()} сум</div>
-            <div style="font-size: 12px; opacity: 0.9;">${order.items.map(i => i.name).join(', ')}</div>
+    historyDiv.innerHTML = history.map(order => {
+        // Делаем список товаров аккуратным
+        const itemsList = order.items.map(i => `• ${i.name}`).join('<br>');
+        
+        return `
+        <div class="history-card">
+            <div class="history-date">${order.date}</div>
+            <div class="history-total">Заказ на ${order.total.toLocaleString()} сум</div>
+            <div class="history-items">${itemsList}</div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // 6. Контакты
