@@ -351,3 +351,65 @@ body {
     text-align: right;
     font-size: 15px;
 }
+/* Стиль карточки заказа в истории */
+.m-card {
+    background: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.m-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.m-status { color: #2ecc71; font-weight: bold; }
+
+.m-item {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.m-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #eee;
+}
+
+.m-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+.m-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #222;
+}
+
+.m-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.m-qty { font-size: 11px; color: #666; }
+.m-price { font-size: 13px; font-weight: bold; color: #000; }
+
+.m-footer {
+    margin-top: 8px;
+    text-align: right;
+    font-size: 14px;
+    color: #222;
+}
