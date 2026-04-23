@@ -120,23 +120,72 @@ function updateCardUI(name) {
     if (cart.length > 0) tg.MainButton.show(); else tg.MainButton.hide();
 }
 
-// 7. Отправка заказа
+// Сохранение и отправка заказа
 tg.onEvent('mainButtonClicked', async () => {
     tg.MainButton.showProgress();
+    
+    const orderData = {
+        date: new Date().toLocaleString(),
+        items: [...cart],
+        total: cart.reduce((s, i) => s + i.price, 0)
+    };
+
     try {
         await fetch(`${BACKEND_URL}/order`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 customer: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "Клиент",
-                items: cart,
-                total: cart.reduce((s, i) => s + i.price, 0)
+                ...orderData
             })
         });
+
+        // СОХРАНЯЕМ В ПАМЯТЬ ТЕЛЕФОНА
+        let history = JSON.parse(localStorage.getItem('order_history') || "[]");
+        history.unshift(orderData); // Добавляем новый заказ в начало списка
+        localStorage.setItem('order_history', JSON.stringify(history));
+
         tg.showAlert("✅ Заказ отправлен!");
+        cart = []; // Очищаем корзину
+        updateCardUI(""); // Сбрасываем кнопки на товарах
         tg.close();
     } catch (e) {
-        tg.showAlert("❌ Ошибка при отправке");
+        tg.showAlert("❌ Ошибка отправки");
         tg.MainButton.hideProgress();
     }
 });
+
+// Функция для отрисовки истории заказов
+function renderHistory() {
+    const historyDiv = document.getElementById('order-history');
+    const history = JSON.parse(localStorage.getItem('order_history') || "[]");
+
+    if (history.length === 0) {
+        historyDiv.innerHTML = '<p style="opacity: 0.6; text-align: center;">У вас пока нет заказов</p>';
+        return;
+    }
+
+    historyDiv.innerHTML = history.map(order => `
+        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid #2ecc71;">
+            <div style="font-size: 12px; opacity: 0.6;">${order.date}</div>
+            <div style="font-weight: bold; margin: 5px 0;">Заказ на ${order.total.toLocaleString()} сум</div>
+            <div style="font-size: 13px;">${order.items.map(i => i.name).join(', ')}</div>
+        </div>
+    `).join('');
+}
+
+// Обновим функцию showPage, чтобы при переходе в профиль обновлялась история
+const oldShowPage = window.showPage;
+window.showPage = function(pageId, element) {
+    if (pageId === 'profile') renderHistory();
+    
+    // Скрываем все страницы
+    document.getElementById('shop-page').style.display = 'none';
+    document.getElementById('info-page').style.display = 'none';
+    document.getElementById('profile-page').style.display = 'none';
+    
+    document.getElementById(pageId + '-page').style.display = 'block';
+    
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    if (element) element.classList.add('active');
+};
