@@ -219,5 +219,56 @@ body {
     padding-top: 12px;
     margin-top: 10px;
 }
+    /* Строка товара в истории */
+.history-item-row {
+    display: flex;
+    justify-content: space-between; /* Название слева, кружок справа */
+    align-items: flex-start; /* Выравнивание по верхней линии */
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 15px; /* Расстояние между текстом и кружком */
+}
+
+/* Контейнер для названия */
+.item-name-box {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    flex: 1; /* Занимает всё свободное место слева */
+    line-height: 1.4;
+}
+
+/* Белый кружочек для цифры (отдельно от текста) */
+.item-qty-circle {
+    background-color: white;
+    color: #3B0008; /* Твой основной бордовый цвет */
+    width: 24px;
+    height: 24px;
+    min-width: 24px; /* Чтобы не сжимался */
+    border-radius: 50%; /* Идеальный круг */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-top: 2px; /* Чуть опустим, чтобы было вровень с первой строкой текста */
+}
+
+/* Карточка заказа */
+.history-card {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.history-total {
+    color: #2ecc71;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: block;
+}
 }
 #cart-info { text-align: center; padding: 10px; font-weight: 600; }
