@@ -192,5 +192,32 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 8px;
 }
+
+    .history-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.dot { color: #2ecc71; font-weight: bold; }
+
+.item-name {
+    flex: 1; /* Название занимает все место */
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.item-qty {
+    font-weight: 700;
+    color: #2ecc71;
+    white-space: nowrap; /* Чтобы "шт." не переносилось */
+}
+
+.history-items-container {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 12px;
+    margin-top: 10px;
+}
 }
 #cart-info { text-align: center; padding: 10px; font-weight: 600; }
